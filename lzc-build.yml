@@ -1,0 +1,10 @@
+manifest: ./lzc-manifest.yml
+pkgout: ./dist
+icon: ./icon.png
+contentdir: ./content
+images:
+  casnode:
+    dockerfile: ./upstream/Dockerfile
+    context: ./upstream
+    builder: local
+buildscript: ./buildscript.sh

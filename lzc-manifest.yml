@@ -1,0 +1,53 @@
+application:
+  subdomain: casnode
+  multi_instance: false
+  # Casnode has its own local accounts: sign-up is enabled by default
+  # (enable_local_logins and allow_new_registrations both default to true),
+  # sign-up signs the new user straight in, and no email confirmation is
+  # involved. Casdoor SSO is optional and left unconfigured here, so the
+  # application authenticates itself and the platform entry must not stand in
+  # front of it.
+  public_path:
+    - /
+  upstreams:
+    - location: /
+      backend: http://casnode:16900/
+services:
+  casnode:
+    # Built from source (upstream v2.1.0): the published Docker image only
+    # carries the legacy v1.x line, which needs MySQL plus Casdoor SSO.
+    image: embed:casnode
+    environment:
+      - TZ=Asia/Shanghai
+      # The Go backend listens on httpport and reverse-proxies pages to the
+      # Next.js server it starts on httpport + 1 inside the same container.
+      - httpport=16900
+      # SQLite by default; the database and tables are created when missing.
+      - driverName=sqlite
+      - dbName=/app/data/casnode.db
+      - uploadsDir=/app/data/uploads
+      # Keep sign-ups open so a fresh install has a way in.
+      - devSignin=false
+      - trustProxyHeader=true
+    binds:
+      - /lzcapp/var/data:/app/data
+usage: |
+  Casnode 是一个开源论坛系统，外观与功能对标 Discourse，支持分类、话题、
+  回复、搜索、通知、徽章等。默认使用 SQLite，无需额外数据库。
+
+  首次使用：
+    - 打开应用入口，点击注册，填写用户名、邮箱和密码。注册成功后会直接
+      登录，不需要等邮件验证。
+    - 第一个注册的用户即为日常管理账号；论坛管理员名单默认包含 admin，
+      也可在站点设置里调整。
+
+  说明：
+    - 注册与登录都是本地账号体系，默认开启，不依赖 Casdoor 单点登录。
+      Casdoor SSO 是可选项，本包未配置。
+    - 数据（数据库与上传文件）保存在 /app/data，随应用持久化。
+    - 本包基于上游 v2.1.0 源码构建。镜像仓库里现有的镜像对应旧的 v1.x
+      架构（需要 MySQL 与 Casdoor），与新版本不兼容，因此这里采用源码内嵌
+      构建，不依赖任何镜像源。
+    - 本应用使用自身的账号体系登录，已通过 public_path 直接对外开放，
+      请设置强密码。
+    - 未做实机验证。

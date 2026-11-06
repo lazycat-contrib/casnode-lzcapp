@@ -1,0 +1,18 @@
+package: community.lazycat.app.casnode
+name: Casnode
+description: "Open-source forum with a Discourse-like feel, built with Go and Next.js. Local accounts on SQLite out of the box."
+version: 2.1.0
+min_os_version: "1.5.0"
+homepage: https://github.com/casnode/casnode
+author: The Casnode Authors
+license: Apache-2.0
+permissions:
+  required:
+    - net.internet
+locales:
+  zh:
+    name: Casnode
+    description: "开源论坛系统，界面与功能对标 Discourse，Go + Next.js 实现，开箱即用本地账号与 SQLite。"
+  en:
+    name: Casnode
+    description: "Open-source forum with a Discourse-like feel, built with Go and Next.js. Local accounts on SQLite out of the box."
