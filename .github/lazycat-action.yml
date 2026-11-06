@@ -8,19 +8,14 @@ project:
 update:
   strategy: publish
   allow_downgrade: false
-  # The embed: target cannot be an image version source, so the version comes
-  # from the git tag this package tracks.
+  # The service is built from source (embed:) by lzc-build.yml, and an embedded
+  # target cannot be an image version source, so versions come from git.
   version_source:
     type: git
 build:
   toolchains:
     - kind: docker
   run_buildscript: true
-images:
-  - id: casnode
-    target: service
-    service: casnode
-    image: embed:casnode
 stores:
   official:
     enabled: false
